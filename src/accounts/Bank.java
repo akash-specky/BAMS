@@ -32,5 +32,21 @@ public class Bank {
     public String getBankName() {
         return bankName;
     }
+
+    public void freezeAccount(String accountNumber) {
+        try {
+            getAccount(accountNumber).freeze();
+        } catch (AccountNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void closeAccount(String accountNumber) {
+        try {
+            getAccount(accountNumber).close();
+        } catch (AccountNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
 

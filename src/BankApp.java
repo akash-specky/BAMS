@@ -18,13 +18,14 @@ public class BankApp {
         Account a2 = bank.openAccount(new CheckingAccount());
 
         a1.deposit(5000);
+        a1.freeze();
         transferService.transferWithinBank(
                 bank,
                 a1.getAccountId(),
                 a2.getAccountId(),
                 2000
         );
-
+        a2.close();
         a1.printStatement(a1);
         a2.printStatement(a2);
 

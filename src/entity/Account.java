@@ -10,8 +10,12 @@ public abstract class Account {
     protected String accountId;
     protected String userId;
     protected double balance;
-    protected boolean isActive = true;
     protected final List<Transaction> transactions = new ArrayList<>();
+    protected AccountStatus status = AccountStatus.ACTIVE;
+
+    public AccountStatus getStatus() {
+        return status;
+    }
 
     public Account() {
         this.accountId = UUID.randomUUID().toString();
@@ -51,9 +55,6 @@ public abstract class Account {
         transactions.add(new Transaction("Deposit", amount));
     }
 
-    public boolean isActive() {
-        return isActive;
-    }
     public List<Transaction> getTransactions() {
         return transactions;
     }
@@ -62,14 +63,29 @@ public abstract class Account {
             throw new IllegalArgumentException("Amount must be greater than zero");
         }
     }
-
-    private void ensureActive() {
-        if (!isActive()) {
-            throw new IllegalArgumentException("Account is closed");
+    public void close() {
+        if (balance != 0) {
+            throw new IllegalArgumentException(
+                    "Account balance must be zero to close");
+        }
+        status = AccountStatus.CLOSED;
+    }
+    protected void ensureActive() {
+        if (status != AccountStatus.ACTIVE) {
+            throw new IllegalArgumentException(
+                    "Account is not active: " + status);
         }
     }
     public void printStatement(Account account) {
         System.out.println("Current Balance for this Account Number: "+account.accountId+" is = " + balance);
     }
+
+    public void freeze() {
+        if (status == AccountStatus.CLOSED) {
+            throw new IllegalArgumentException("Account already closed");
+        }
+        status = AccountStatus.FROZEN;
+    }
+
     public abstract void withdraw(double amount);
 }
